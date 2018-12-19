@@ -3,6 +3,15 @@ import './App.css'
 import axios from 'axios'
 
 class App extends Component {
+  everyAnimal = () => {
+    axios.get('http://localhost:4567/animals').then(response => {
+      console.log(response.data[0].species)
+      // return response.data.map((animalObject, index) => {
+      //   return <li key={index}>{animalObject.species}</li>
+      // })
+    })
+  }
+
   render() {
     return (
       <div>
@@ -12,11 +21,9 @@ class App extends Component {
 
           <p>
             I know you're jet-lagged and lacking sleep, so let me refresh your memory about all the
-            wildlife you've seen.
+            wildlife you've seen. For starters, here is a list of every animal you saw:
           </p>
-
-          <p>For starters, here is a list of every animal you saw:</p>
-
+          <ul>{this.everyAnimal()}</ul>
           <p>These are all the animals you've seen in the jungle alone!</p>
 
           <p>
