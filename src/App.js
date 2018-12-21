@@ -8,39 +8,70 @@ class App extends Component {
 
     this.state = {
       animals: [],
+      animalsTwo: [],
       animalsSeenInJungle: [],
       deletedAnimals: [],
-      totalTimesAnimalsSeen: 0
+      timesAnimalsSeen: 0
     }
   }
 
-  componentDidMount = () => {
+  allAnimals = () => {
     axios.get('http://localhost:4567/animals').then(response => {
-      console.log(response.data.count_of_times_seen)
       this.setState({
         animals: response.data
       })
     })
+  }
 
+  allAnimalsTwo = () => {
+    axios.get('http://localhost:4567/animals').then(response => {
+      this.setState(
+        {
+          animalsTwo: response.data
+        },
+        () => {
+          let timesSeen = this.state.animalsTwo.map((animalObject, index) => {
+            return animalObject.count_of_times_seen
+          })
+          let totalTimes = timesSeen.reduce((a, b) => {
+            return a + b
+          })
+          this.setState({
+            timesAnimalsSeen: totalTimes
+          })
+        }
+      )
+    })
+  }
+
+  showAnimals = () => {
+    return this.state.animals.map((animalObject, index) => {
+      return <p key={index}>{animalObject.species}</p>
+    })
+  }
+
+  jungleAnimals = () => {
     axios.get('http://localhost:4567/animals/Jungle').then(response => {
       this.setState({
         animalsSeenInJungle: response.data
       })
     })
-
-    // axios.delete('/animals/Desert').then(response => {
-    //   console.log(response.data)
-    //   this.setState({
-    //     deletedAnimals: response.data
-    //   })
-    // })
   }
 
-  // sumOfTimesAnimalsSeen = () => {
-  //   let timesAnimalsSeen = this.state.animals.map(animalObject => {
+  showJungleAnimals = () => {
+    return this.state.animalsSeenInJungle.map((animalObject, index) => {
+      return <p key={index}>{animalObject.species}</p>
+    })
+  }
+
+  // showTotalAnimals = () => {
+  //   let timesSeen = this.state.animals.map((animalObject, index) => {
   //     return animalObject.count_of_times_seen
   //   })
-  //   return timesAnimalsSeen.reduce((a, b) => a + b)
+  //   let totalTimes = timesSeen.reduce((a, b) => {
+  //     return a + b
+  //   })
+  //   return totalTimes
   // }
 
   render() {
@@ -52,17 +83,14 @@ class App extends Component {
 
           <p>
             I know you're jet-lagged and lacking sleep, so let me refresh your memory about all the
-            wildlife you've seen. For starters, here is a list of every animal you saw:
+            wildlife you've seen. For starters, click this button to see is a list of every animal
+            you saw:
           </p>
-          <ul>
-            {this.state.animals.map((animalObject, index) => {
-              return <li key={index}>{animalObject.species}</li>
-            })}
-          </ul>
+          <button onClick={this.allAnimals}>Click here</button>
+          {this.showAnimals()}
           <p>These are all the animals you've seen in the jungle alone!</p>
-          {this.state.animalsSeenInJungle.map((animalObject, index) => {
-            return <li key={index}>{animalObject.species}</li>
-          })}
+          <button onClick={this.jungleAnimals}>Click here</button>
+          {this.showJungleAnimals()}
           <p>
             The desert was your least favorite part, so let's forget about it. Take a look at the
             animals we're deleting from your brain for one last time (and then look at this bright
@@ -72,7 +100,8 @@ class App extends Component {
             return <li key={index}>{animalObject.species}</li>
           })}
           <p>This is the total number of animals you've seen!</p>
-          {this.state.totalTimesAnimalsSeen}
+          <button onClick={this.allAnimalsTwo}>Click Here</button>
+          <p>{this.state.timesAnimalsSeen}</p>
           <p>This is the total number of occurences you've seen of just lions, tigers and bears.</p>
         </section>
       </div>
