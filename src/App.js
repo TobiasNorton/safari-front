@@ -11,7 +11,8 @@ class App extends Component {
       animalsTwo: [],
       animalsSeenInJungle: [],
       deletedAnimals: [],
-      timesAnimalsSeen: 0
+      timesAnimalsSeen: '',
+      lionsTigersBearsCount: ''
     }
   }
 
@@ -23,6 +24,7 @@ class App extends Component {
     })
   }
 
+  // Calculating the total count of times seen on the front end
   allAnimalsTwo = () => {
     axios.get('http://localhost:4567/animals').then(response => {
       this.setState(
@@ -46,7 +48,11 @@ class App extends Component {
 
   showAnimals = () => {
     return this.state.animals.map((animalObject, index) => {
-      return <p key={index}>{animalObject.species}</p>
+      return (
+        <p key={index} className="list">
+          {animalObject.species}
+        </p>
+      )
     })
   }
 
@@ -60,19 +66,33 @@ class App extends Component {
 
   showJungleAnimals = () => {
     return this.state.animalsSeenInJungle.map((animalObject, index) => {
-      return <p key={index}>{animalObject.species}</p>
+      return (
+        <p key={index} className="list">
+          {animalObject.species}
+        </p>
+      )
     })
   }
 
-  // showTotalAnimals = () => {
-  //   let timesSeen = this.state.animals.map((animalObject, index) => {
-  //     return animalObject.count_of_times_seen
-  //   })
-  //   let totalTimes = timesSeen.reduce((a, b) => {
-  //     return a + b
-  //   })
-  //   return totalTimes
-  // }
+  showAnimals = () => {
+    return this.state.animals.map((animalObject, index) => {
+      return (
+        <p key={index} className="list">
+          {animalObject.species}
+        </p>
+      )
+    })
+  }
+
+  // Created a new route on the back end
+
+  lionsTigersBears = () => {
+    axios.get('http://localhost:4567/animals/count/lionstigersbears').then(response => {
+      this.setState({
+        lionsTigersBearsCount: response.data
+      })
+    })
+  }
 
   render() {
     return (
@@ -96,13 +116,20 @@ class App extends Component {
             animals we're deleting from your brain for one last time (and then look at this bright
             red light).
           </p>
+          <button>Click Here</button>
           {this.state.deletedAnimals.map((animalObject, index) => {
-            return <li key={index}>{animalObject.species}</li>
+            return (
+              <p key={index} className="list">
+                {animalObject.species}
+              </p>
+            )
           })}
           <p>This is the total number of animals you've seen!</p>
           <button onClick={this.allAnimalsTwo}>Click Here</button>
-          <p>{this.state.timesAnimalsSeen}</p>
+          <p className="list">{this.state.timesAnimalsSeen}</p>
           <p>This is the total number of occurences you've seen of just lions, tigers and bears.</p>
+          <button onClick={this.lionsTigersBears}>Click Here</button>
+          <p className="list">{this.state.lionsTigersBearsCount}</p>
         </section>
       </div>
     )

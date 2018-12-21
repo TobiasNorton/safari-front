@@ -31,3 +31,7 @@ h3 {
 p {
   line-height: 1.5rem;
 }
+
+p.list {
+  margin: 0;
+}
